@@ -1,0 +1,18 @@
+<Project Sdk="WixToolset.Sdk/7.0.1">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <OutputName>FileFlow-Server-x64</OutputName>
+    <DefineConstants>$(DefineConstants);FileFlowVersion=1.0.0</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <BindPath Include="$(MSBuildProjectDirectory)\..\publish\Service" BindName="ServicePayload" />
+    <BindPath Include="$(MSBuildProjectDirectory)\..\publish\Manager" BindName="ManagerPayload" />
+  </ItemGroup>
+  <Target Name="ValidatePublishedApplications" BeforeTargets="Build">
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\..\publish\Service\FileFlow.Service.exe')"
+           Text="FileFlow Service has not been published. First run scripts\Build-MSI.ps1." />
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\..\publish\Manager\FileFlow.Manager.exe')"
+           Text="FileFlow Manager has not been published. First run scripts\Build-MSI.ps1." />
+  </Target>
+</Project>

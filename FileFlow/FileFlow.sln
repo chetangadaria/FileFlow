@@ -1,0 +1,43 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileFlow.Core", "src\FileFlow.Core\FileFlow.Core.csproj", "{8207F6AC-7E39-4C9E-9929-1D46620854B1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileFlow.Service", "src\FileFlow.Service\FileFlow.Service.csproj", "{AC23A157-05FD-429D-9FC6-98B41A997B8F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileFlow.Manager", "src\FileFlow.Manager\FileFlow.Manager.csproj", "{CCB110A6-7D09-4B72-8F58-8B25C91B6E2F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileFlow.Core.SmokeTests", "tests\FileFlow.Core.SmokeTests\FileFlow.Core.SmokeTests.csproj", "{CBECA9AA-33D3-46D3-9832-29E1D204C0E2}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "FileFlow.Setup", "installer\FileFlow.Setup.wixproj", "{4207208B-2213-445F-AFF5-611E538AE14D}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {8207F6AC-7E39-4C9E-9929-1D46620854B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {8207F6AC-7E39-4C9E-9929-1D46620854B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {8207F6AC-7E39-4C9E-9929-1D46620854B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {8207F6AC-7E39-4C9E-9929-1D46620854B1}.Release|Any CPU.Build.0 = Release|Any CPU
+        {AC23A157-05FD-429D-9FC6-98B41A997B8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {AC23A157-05FD-429D-9FC6-98B41A997B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {AC23A157-05FD-429D-9FC6-98B41A997B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {AC23A157-05FD-429D-9FC6-98B41A997B8F}.Release|Any CPU.Build.0 = Release|Any CPU
+        {CCB110A6-7D09-4B72-8F58-8B25C91B6E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {CCB110A6-7D09-4B72-8F58-8B25C91B6E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {CCB110A6-7D09-4B72-8F58-8B25C91B6E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {CCB110A6-7D09-4B72-8F58-8B25C91B6E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+        {CBECA9AA-33D3-46D3-9832-29E1D204C0E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {CBECA9AA-33D3-46D3-9832-29E1D204C0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {CBECA9AA-33D3-46D3-9832-29E1D204C0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {CBECA9AA-33D3-46D3-9832-29E1D204C0E2}.Release|Any CPU.Build.0 = Release|Any CPU
+        {4207208B-2213-445F-AFF5-611E538AE14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {4207208B-2213-445F-AFF5-611E538AE14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+EndGlobal

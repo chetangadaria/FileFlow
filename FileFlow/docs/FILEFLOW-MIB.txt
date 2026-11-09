@@ -1,0 +1,82 @@
+FILEFLOW-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    experimental, OBJECT-TYPE, NOTIFICATION-TYPE
+        FROM SNMPv2-SMI;
+
+fileFlow OBJECT IDENTIFIER ::= { experimental 9999 }
+fileFlowNotifications OBJECT IDENTIFIER ::= { fileFlow 0 }
+fileFlowObjects OBJECT IDENTIFIER ::= { fileFlow 1 }
+
+fileFlowServiceName OBJECT-TYPE
+    SYNTAX OCTET STRING (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Windows service emitting the notification."
+    ::= { fileFlowObjects 1 }
+
+fileFlowEvent OBJECT-TYPE
+    SYNTAX OCTET STRING (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Started, TaskFailed, Recovered, Heartbeat, Stopping, or Test."
+    ::= { fileFlowObjects 2 }
+
+fileFlowTask OBJECT-TYPE
+    SYNTAX OCTET STRING (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Task name associated with event."
+    ::= { fileFlowObjects 3 }
+
+fileFlowMessage OBJECT-TYPE
+    SYNTAX OCTET STRING (SIZE (0..512))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Human-readable event details, UTF-8."
+    ::= { fileFlowObjects 4 }
+
+fileFlowMachine OBJECT-TYPE
+    SYNTAX OCTET STRING (SIZE (0..255))
+    MAX-ACCESS read-only
+    STATUS current
+    DESCRIPTION "Windows machine name."
+    ::= { fileFlowObjects 5 }
+
+fileFlowStarted NOTIFICATION-TYPE
+    OBJECTS { fileFlowServiceName, fileFlowEvent, fileFlowTask, fileFlowMessage, fileFlowMachine }
+    STATUS current
+    DESCRIPTION "The FileFlow Windows Service has started."
+    ::= { fileFlowNotifications 1 }
+
+fileFlowTaskFailed NOTIFICATION-TYPE
+    OBJECTS { fileFlowServiceName, fileFlowEvent, fileFlowTask, fileFlowMessage, fileFlowMachine }
+    STATUS current
+    DESCRIPTION "A transfer task or service configuration failed."
+    ::= { fileFlowNotifications 2 }
+
+fileFlowRecovered NOTIFICATION-TYPE
+    OBJECTS { fileFlowServiceName, fileFlowEvent, fileFlowTask, fileFlowMessage, fileFlowMachine }
+    STATUS current
+    DESCRIPTION "A transfer task or service configuration recovered."
+    ::= { fileFlowNotifications 3 }
+
+fileFlowHeartbeat NOTIFICATION-TYPE
+    OBJECTS { fileFlowServiceName, fileFlowEvent, fileFlowTask, fileFlowMessage, fileFlowMachine }
+    STATUS current
+    DESCRIPTION "The Windows Service heartbeat. Alert if it is absent."
+    ::= { fileFlowNotifications 4 }
+
+fileFlowStopping NOTIFICATION-TYPE
+    OBJECTS { fileFlowServiceName, fileFlowEvent, fileFlowTask, fileFlowMessage, fileFlowMachine }
+    STATUS current
+    DESCRIPTION "The Windows Service is stopping normally."
+    ::= { fileFlowNotifications 5 }
+
+fileFlowTest NOTIFICATION-TYPE
+    OBJECTS { fileFlowServiceName, fileFlowEvent, fileFlowTask, fileFlowMessage, fileFlowMachine }
+    STATUS current
+    DESCRIPTION "Manual test trap sent by the management UI."
+    ::= { fileFlowNotifications 6 }
+
+END

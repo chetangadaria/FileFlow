@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- This MSI contains SELF-CONTAINED win-x64 published executables, not C# source. -->
+  <!-- Bump FileFlowVersion in FileFlow.Setup.wixproj for a major upgrade release. -->
+  <Package Name="FileFlow Automated File Transfer"
+           Manufacturer="FileFlow Project"
+           Version="$(var.FileFlowVersion)"
+           UpgradeCode="E1F5E58C-C720-4876-AD92-B3158A4CDB7D"
+           Scope="perMachine"
+           InstallerVersion="500"
+           Compressed="yes">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of FileFlow is already installed."
+                  Schedule="afterInstallInitialize" />
+    <Launch Condition="VersionNT64" Message="FileFlow requires 64-bit Windows." />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="FileFlow">
+        <Directory Id="SERVICEFOLDER" Name="Service" />
+        <Directory Id="MANAGERFOLDER" Name="Manager" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="DATAFOLDER" Name="FileFlow">
+        <Directory Id="LOGSFOLDER" Name="Logs" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder" />
+
+    <!-- Native MSI service registration: installs, starts, stops and removes service. -->
+    <!-- LocalSystem is the default service identity; no passwords are embedded in the MSI. -->
+    <DirectoryRef Id="SERVICEFOLDER">
+      <Component Id="ServiceExecutable" Guid="A29DCF9F-FB6C-4B3A-8365-1CE1C2AE5E62">
+        <File Id="ServiceExeFile" Source="!(bindpath.ServicePayload)\FileFlow.Service.exe" KeyPath="yes" />
+        <ServiceInstall Id="FileFlowServiceInstall"
+                        Name="FileFlowService"
+                        DisplayName="FileFlow Automated File Transfer"
+                        Description="Local and UNC share file transfer every five seconds with daily logs and SNMP traps."
+                        Type="ownProcess" Start="auto" ErrorControl="normal" />
+        <ServiceControl Id="FileFlowServiceControl" Name="FileFlowService"
+                        Start="install" Stop="both" Remove="uninstall" Wait="yes" />
+        <ServiceConfigFailureActions ServiceName="FileFlowService"
+                                     OnInstall="yes" OnReinstall="yes" ResetPeriod="86400">
+          <Failure Action="restartService" Delay="5000" />
+          <Failure Action="restartService" Delay="30000" />
+          <Failure Action="restartService" Delay="60000" />
+        </ServiceConfigFailureActions>
+      </Component>
+    </DirectoryRef>
+
+    <!-- The desktop manager starts on interactive sign-in, not in Session 0. -->
+    <DirectoryRef Id="MANAGERFOLDER">
+      <Component Id="ManagerExecutable" Guid="47421149-361B-4F7E-9915-757F9153BFB9">
+        <File Id="ManagerExeFile" Source="!(bindpath.ManagerPayload)\FileFlow.Manager.exe" KeyPath="yes">
+          <Shortcut Id="FileFlowStartMenuShortcut" Directory="ProgramMenuFolder"
+                    Name="FileFlow Manager" Description="Configure and monitor FileFlow tasks"
+                    WorkingDirectory="MANAGERFOLDER" />
+        </File>
+      </Component>
+      <Component Id="ManagerAtSignIn" Guid="CBEEB8CA-C977-45F4-8792-2F956FABF28D">
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                       Name="FileFlowManager" Type="string"
+                       Value="&quot;[MANAGERFOLDER]FileFlow.Manager.exe&quot; --tray"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Protect configuration to avoid unprivileged redirection of privileged file moves. -->
+    <!-- System/Admins = full; built-in Users = read/execute. The logs are read-only to Users. -->
+    <!-- DATAFOLDER is not populated by MSI and user state is left in place on uninstall. -->
+    <DirectoryRef Id="DATAFOLDER">
+      <Component Id="DataDirectory" Guid="132AF5B8-9A61-4B2B-A4DA-685BC75C1AA1">
+        <CreateFolder>
+          <PermissionEx Sddl="D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;GRGX;;;BU)" />
+        </CreateFolder>
+        <RegistryValue Root="HKLM" Key="Software\FileFlow" Name="DataDirectory"
+                       Type="string" Value="[DATAFOLDER]" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="LOGSFOLDER">
+      <Component Id="LogsDirectory" Guid="38E87A42-8FD6-4920-9788-B5D6CC7C6A2A">
+        <CreateFolder>
+          <PermissionEx Sddl="D:P(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;GRGX;;;BU)" />
+        </CreateFolder>
+        <RegistryValue Root="HKLM" Key="Software\FileFlow" Name="LogsDirectory"
+                       Type="string" Value="[LOGSFOLDER]" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="FileFlowComplete" Title="FileFlow Service and Manager" Level="1">
+      <ComponentRef Id="ServiceExecutable" />
+      <ComponentRef Id="ManagerExecutable" />
+      <ComponentRef Id="ManagerAtSignIn" />
+      <ComponentRef Id="DataDirectory" />
+      <ComponentRef Id="LogsDirectory" />
+      <!-- Harvest additional runtime DLLs, assets, configs, but not the explicit EXE components. -->
+      <Files Include="!(bindpath.ServicePayload)\**"
+             Exclude="!(bindpath.ServicePayload)\FileFlow.Service.exe;!(bindpath.ServicePayload)\**\*.pdb"
+             Directory="SERVICEFOLDER" />
+      <Files Include="!(bindpath.ManagerPayload)\**"
+             Exclude="!(bindpath.ManagerPayload)\FileFlow.Manager.exe;!(bindpath.ManagerPayload)\**\*.pdb"
+             Directory="MANAGERFOLDER" />
+    </Feature>
+  </Package>
+</Wix>
